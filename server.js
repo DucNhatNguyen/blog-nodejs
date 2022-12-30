@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }))
 // 		console.log('Failed to sync db: ' + err.message)
 // 	})
 
-require('./src/routes/blog.routes.js')(app)
+require('./src/routes')(app)
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080
