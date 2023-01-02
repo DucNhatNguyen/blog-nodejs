@@ -13,10 +13,10 @@ module.exports = (app) => {
 	router.get('/published', blogControllers.findAllPublished)
 
 	// Retrieve a single Tutorial with id
-	router.get('/:id', blogControllers.findOne)
+	router.get('/:slug', blogControllers.findOne)
 
 	// Update a Tutorial with id
-	router.put('/:id', blogControllers.update)
+	router.put('/:slug', blogControllers.update)
 
 	// Delete a Tutorial with id
 	router.delete('/:id', blogControllers.delete)

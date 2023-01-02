@@ -5,7 +5,8 @@ const cors = require('cors')
 const app = express()
 
 var corsOptions = {
-	origin: 'http://localhost:8081',
+	origin: '*',
+	methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
 }
 
 app.use(cors(corsOptions))

@@ -70,31 +70,51 @@ exports.create = (req, res) => {
 }
 
 exports.findAll = (req, res) => {
+	const page = Number(req.query.page) == 0 ? 0 : Number(req.query.page) - 1
+	const size = req.query.pagesize
+
 	models.blogs
-		.findAll()
-		.then((data) => {
-			res.send(data)
+		.findAndCountAll({
+			attributes: [
+				'id',
+				'author',
+				'publicdate',
+				'sortdesc',
+				'status',
+				'thumbnail',
+				'view',
+				'slug',
+				'cateid',
+				'title',
+				'createdAt',
+			],
+			offset: page,
+			limit: size,
+		})
+		.then(({ count, rows }) => {
+			res.send({ data: rows, total: count })
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message:
-					err.message || 'Some error occurred while retrieving blog.',
+				message: err.message || 'Some error occurred while retrieving blog.',
 			})
 		})
 }
 
 exports.findOne = (req, res) => {
-	const id = req.params.id
+	const slug = req.params.slug
 
-	if (!req.params.id) {
+	if (!req.params.slug) {
 		res.status(400).send({
-			message: 'Id can not be empty!',
+			message: 'slug can not be empty!',
 		})
 		return
 	}
 
 	models.blogs
-		.findByPk(id)
+		.findOne({
+			where: { slug: slug },
+		})
 		.then((data) => {
 			if (data) {
 				res.send(data)
@@ -106,38 +126,38 @@ exports.findOne = (req, res) => {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: 'Error retrieving Tutorial with id=' + id,
+				message: 'Error retrieving Tutorial with id=' + slug,
 			})
 		})
 }
 
 exports.update = (req, res) => {
-	const id = req.params.id
-
-	if (!id) {
+	const slug = req.params.slug
+	console.log(req.body)
+	if (!slug) {
 		res.status(400).send({
-			message: 'Id can not be empty!',
+			message: 'Slug can not be empty!',
 		})
 		return
 	}
 
 	models.blogs
 		.update(req.body, {
-			where: { id: id },
+			where: { slug: slug },
 			returning: true,
 		})
 		.then(([num, data]) => {
 			if (num != 1) {
-				res.send({
-					message: `Cannot update Blog with id=${id}. Maybe Blog was not found or req.body is empty!`,
+				res.status(500).send({
+					message: `Cannot update Blog with slug=${slug}. Maybe Blog was not found or req.body is empty!`,
 				})
 			} else {
-				res.send(data[0].dataValues)
+				res.status(200).send(data[0].dataValues)
 			}
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: 'Error updating Blog with id=' + id,
+				message: 'Error updating Blog with slug=' + slug,
 			})
 		})
 }
