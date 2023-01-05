@@ -120,7 +120,7 @@ exports.findOne = (req, res) => {
 			if (data) {
 				res.send({
 					...data.dataValues,
-					publicdate: date.format(data.publicdate, 'DD/MM/YYYY'),
+					publicdate: date.format(data.publicdate, 'YYYY-MM-DD'),
 				})
 			} else {
 				res.status(404).send({
