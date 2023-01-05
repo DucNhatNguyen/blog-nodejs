@@ -1,5 +1,6 @@
 var initModels = require('../models/init-models')
 const sequelize = require('../config/sequelize.config')
+const date = require('date-and-time')
 var models = initModels(sequelize)
 
 exports.create = (req, res) => {
@@ -117,7 +118,10 @@ exports.findOne = (req, res) => {
 		})
 		.then((data) => {
 			if (data) {
-				res.send(data)
+				res.send({
+					...data.dataValues,
+					publicdate: date.format(data.publicdate, 'DD/MM/YYYY'),
+				})
 			} else {
 				res.status(404).send({
 					message: `Cannot find Blog with id=${id}.`,
