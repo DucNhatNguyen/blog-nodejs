@@ -1,5 +1,7 @@
 var initModels = require('../models/init-models')
 const sequelize = require('../config/sequelize.config')
+const { getPagination } = require('../commons/helpers')
+const { clearConfigCache } = require('prettier')
 var models = initModels(sequelize)
 
 exports.create = (req, res) => {
@@ -34,10 +36,26 @@ exports.create = (req, res) => {
 }
 
 exports.findAll = (req, res) => {
+	const { page, pagesize } = req.query
+
+	const { limit, offset } = getPagination(page, pagesize)
+
 	models.category
-		.findAll()
-		.then((data) => {
-			res.send(data)
+		.findAndCountAll({
+			attributes: [
+				'id',
+				'title',
+				'status',
+				'createddate',
+				'createdby',
+				'parentid',
+				'isparentcate'
+			],
+			offset: offset,
+			limit: limit,
+		})
+		.then(({ count, rows }) => {
+			res.send({ data: rows, total: count })
 		})
 		.catch((err) => {
 			res.status(500).send({

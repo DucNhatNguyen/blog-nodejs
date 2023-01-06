@@ -1,6 +1,7 @@
 var initModels = require('../models/init-models')
 const sequelize = require('../config/sequelize.config')
 const date = require('date-and-time')
+const { getPagination } = require('../commons/helpers')
 var models = initModels(sequelize)
 
 exports.create = (req, res) => {
@@ -71,8 +72,9 @@ exports.create = (req, res) => {
 }
 
 exports.findAll = (req, res) => {
-	const page = Number(req.query.page) == 0 ? 0 : Number(req.query.page) - 1
-	const size = req.query.pagesize
+	const { page, pagesize } = req.query
+
+	const { limit, offset } = getPagination(page, pagesize)
 
 	models.blogs
 		.findAndCountAll({
@@ -89,8 +91,8 @@ exports.findAll = (req, res) => {
 				'title',
 				'createdAt',
 			],
-			offset: page,
-			limit: size,
+			offset: offset,
+			limit: limit,
 		})
 		.then(({ count, rows }) => {
 			res.send({ data: rows, total: count })
