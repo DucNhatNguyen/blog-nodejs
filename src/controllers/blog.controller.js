@@ -2,6 +2,7 @@ var initModels = require('../models/init-models')
 const sequelize = require('../config/sequelize.config')
 const date = require('date-and-time')
 const { getPagination } = require('../commons/helpers')
+const multer = require('multer')
 var models = initModels(sequelize)
 
 exports.create = (req, res) => {
@@ -203,3 +204,24 @@ exports.delete = (req, res) => {
 exports.softDelete = (req, res) => {}
 
 exports.findAllPublished = (req, res) => {}
+
+exports.uploadImgBlog = (req, res, next) => {
+	const storage = multer.diskStorage({
+		destination: function (req, file, cb) {
+			cb(null, './uploads/blog')
+		},
+		filename: function (res, file, cb) {
+			cb(null, file.originalname)
+		},
+	})
+	console.log('storage', storage.destination)
+
+	const upload = multer({ storage: storage }).single('thumbnail')
+	return upload(req, res, function (err) {
+		if (err) {
+			res.send(err)
+		} else {
+			res.send('Upload file thành công!')
+		}
+	})
+}

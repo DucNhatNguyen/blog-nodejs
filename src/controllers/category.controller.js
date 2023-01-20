@@ -49,7 +49,13 @@ exports.findAll = (req, res) => {
 				'createddate',
 				'createdby',
 				'parentid',
-				'isparentcate'
+				'isparentcate',
+				[
+					sequelize.literal(
+						"(case status when 1 then 'Hoạt động' else 'Tạm ẩn' end)"
+					),
+					'statusname',
+				],
 			],
 			offset: offset,
 			limit: limit,
