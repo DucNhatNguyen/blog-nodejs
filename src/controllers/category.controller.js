@@ -14,12 +14,18 @@ exports.create = (req, res) => {
 		return
 	}
 
+	if (!params.slug) {
+		res.status(400).send({
+			message: 'Slug can not be empty!',
+		})
+	}
 	// Create Blog model
 	const category = {
 		title: params.title,
 		status: 1,
 		parentid: params.parentid,
 		isparentcate: params.isparentcate,
+		slug: params.slug,
 	}
 
 	models.category
@@ -45,6 +51,7 @@ exports.findAll = (req, res) => {
 			attributes: [
 				'id',
 				'title',
+				'slug',
 				'status',
 				'createddate',
 				'createdby',
@@ -86,6 +93,7 @@ exports.findOne = (req, res) => {
 			attributes: [
 				'id',
 				'title',
+				'slug',
 				'status',
 				'createddate',
 				'createdby',
@@ -117,12 +125,19 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
 	const id = req.params.id
+	const slug = req.body.slug
 
 	if (!id) {
 		res.status(400).send({
 			message: 'Id can not be empty!',
 		})
 		return
+	}
+
+	if (!slug) {
+		res.status(400).send({
+			message: 'Slug can not be empty!',
+		})
 	}
 
 	models.category
