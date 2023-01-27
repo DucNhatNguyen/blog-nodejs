@@ -1,7 +1,7 @@
 var initModels = require('../models/init-models')
+var moment = require('moment')
 const sequelize = require('../config/sequelize.config')
 const { getPagination } = require('../commons/helpers')
-const { clearConfigCache } = require('prettier')
 var models = initModels(sequelize)
 
 exports.create = (req, res) => {
@@ -26,6 +26,7 @@ exports.create = (req, res) => {
 		parentid: params.parentid,
 		isparentcate: params.isparentcate,
 		slug: params.slug,
+		createddate: moment(),
 	}
 
 	models.category
