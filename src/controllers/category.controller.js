@@ -82,7 +82,23 @@ exports.findOne = (req, res) => {
 	}
 
 	models.category
-		.findByPk(id)
+		.findByPk(id, {
+			attributes: [
+				'id',
+				'title',
+				'status',
+				'createddate',
+				'createdby',
+				'parentid',
+				'isparentcate',
+				[
+					sequelize.literal(
+						"(case status when 1 then 'Hoạt động' else 'Tạm ẩn' end)"
+					),
+					'statusname',
+				],
+			],
+		})
 		.then((data) => {
 			if (data) {
 				res.send(data)
