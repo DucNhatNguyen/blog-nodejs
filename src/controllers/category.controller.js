@@ -64,6 +64,7 @@ exports.findAll = (req, res) => {
 					'statusname',
 				],
 			],
+			order: sequelize.literal('title ASC'),
 			offset: offset,
 			limit: limit,
 		})
