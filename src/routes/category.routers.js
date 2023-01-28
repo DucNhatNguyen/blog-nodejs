@@ -7,6 +7,8 @@ module.exports = (app) => {
 
 	router.get('/', cateControllers.findAll)
 
+	router.get('/parent', cateControllers.getCateParent)
+
 	router.get('/:id', cateControllers.findOne)
 
 	router.put('/:id', cateControllers.update)

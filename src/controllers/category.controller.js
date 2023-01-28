@@ -42,6 +42,40 @@ exports.create = (req, res) => {
 		})
 }
 
+exports.getCateParent = (req, res) => {
+	models.category
+		.findAll({
+			attributes: [
+				'id',
+				'title',
+				'slug',
+				'status',
+				'createddate',
+				'createdby',
+				'parentid',
+				'isparentcate',
+				[
+					sequelize.literal(
+						"(case status when 1 then 'Hoạt động' else 'Tạm ẩn' end)"
+					),
+					'statusname',
+				],
+			],
+			where: {
+				parentid: 0,
+			},
+		})
+		.then((data) => {
+			res.send({ data: data })
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message:
+					err.message || 'Some error occurred while retrieving category.',
+			})
+		})
+}
+
 exports.findAll = (req, res) => {
 	const { page, pagesize } = req.query
 
