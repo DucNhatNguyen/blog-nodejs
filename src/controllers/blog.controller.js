@@ -3,6 +3,8 @@ const sequelize = require('../config/sequelize.config')
 const date = require('date-and-time')
 const { getPagination } = require('../commons/helpers')
 const multer = require('multer')
+const category = require('../models/category')
+const blogs = require('../models/blogs')
 var models = initModels(sequelize)
 
 exports.create = (req, res) => {
@@ -91,6 +93,28 @@ exports.findAll = (req, res) => {
 				'cateid',
 				'title',
 				'createdAt',
+				[
+					sequelize.literal(
+						"(case blogs.status when 1 then 'Hoạt động' else 'Tạm ẩn' end)"
+					),
+					'statusname',
+				],
+			],
+			include: [
+				{
+					model: models.category,
+					as: 'cate',
+					required: true,
+					right: true,
+					attributes: ['id', 'title'],
+				},
+				{
+					model: models.author,
+					as: 'author_author',
+					required: true,
+					right: true,
+					attributes: ['id', 'name'],
+				},
 			],
 			offset: offset,
 			limit: limit,
