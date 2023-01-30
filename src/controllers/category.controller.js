@@ -2,6 +2,7 @@ var initModels = require('../models/init-models')
 var moment = require('moment')
 const sequelize = require('../config/sequelize.config')
 const { getPagination } = require('../commons/helpers')
+const { Op } = require('sequelize')
 var models = initModels(sequelize)
 
 exports.create = (req, res) => {
@@ -63,6 +64,42 @@ exports.getCateParent = (req, res) => {
 			],
 			where: {
 				parentid: 0,
+			},
+		})
+		.then((data) => {
+			res.send({ data: data })
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message:
+					err.message || 'Some error occurred while retrieving category.',
+			})
+		})
+}
+
+exports.getCateChild = (req, res) => {
+	models.category
+		.findAll({
+			attributes: [
+				'id',
+				'title',
+				'slug',
+				'status',
+				'createddate',
+				'createdby',
+				'parentid',
+				'isparentcate',
+				[
+					sequelize.literal(
+						"(case status when 1 then 'Hoạt động' else 'Tạm ẩn' end)"
+					),
+					'statusname',
+				],
+			],
+			where: {
+				parentid: {
+					[Op.ne]: 0,
+				},
 			},
 		})
 		.then((data) => {

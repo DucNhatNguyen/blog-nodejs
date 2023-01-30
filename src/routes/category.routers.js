@@ -9,6 +9,8 @@ module.exports = (app) => {
 
 	router.get('/parent', cateControllers.getCateParent)
 
+	router.get('/child', cateControllers.getCateChild)
+
 	router.get('/:id', cateControllers.findOne)
 
 	router.put('/:id', cateControllers.update)
