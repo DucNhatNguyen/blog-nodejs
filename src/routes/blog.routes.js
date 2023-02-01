@@ -41,14 +41,21 @@ module.exports = (app) => {
 
 	var upload = multer({ storage: storage })
 
-	router.post('/photo', upload.single('thumbnail'), (req, res, next) => {
+	var cloudinary = require('cloudinary').v2
+	cloudinary.config({
+		cloud_name: 'droaa5vpq',
+		api_key: '278164842727274',
+		api_secret: 'EXsxgnPt8fxX5KzaE1IvbzjAFSM',
+	})
+	router.post('/upload', upload.single('file'), (req, res, next) => {
 		const file = req.file
-		if (!file) {
-			const error = new Error('Please upload a file')
-			error.httpStatusCode = 400
-			return next(error)
-		}
-		res.send(file)
+		cloudinary.uploader
+			.upload(file.path, { folder: 'blog-upload' })
+			.then((result) => {
+				console.log(result)
+				res.send({ image_url: result.secure_url })
+			})
+			.catch((err) => console.log(err))
 	})
 
 	app.use('/api/blog', router)
