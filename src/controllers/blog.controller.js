@@ -145,10 +145,7 @@ exports.findOne = (req, res) => {
 		})
 		.then((data) => {
 			if (data) {
-				res.send({
-					...data.dataValues,
-					publicdate: date.format(data.publicdate, 'YYYY-MM-DD'),
-				})
+				res.send(data)
 			} else {
 				res.status(404).send({
 					message: `Cannot find Blog with id=${id}.`,
