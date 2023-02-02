@@ -28,9 +28,9 @@ module.exports = (app) => {
 
 	// upload image for Blog
 	var storage = multer.diskStorage({
-		destination: function (req, file, cb) {
-			cb(null, './public/uploads/')
-		},
+		// destination: function (req, file, cb) {
+		// 	cb(null, './public/uploads/')
+		// },
 		filename: function (req, file, cb) {
 			cb(
 				null,
@@ -41,22 +41,7 @@ module.exports = (app) => {
 
 	var upload = multer({ storage: storage })
 
-	var cloudinary = require('cloudinary').v2
-	cloudinary.config({
-		cloud_name: 'droaa5vpq',
-		api_key: '278164842727274',
-		api_secret: 'EXsxgnPt8fxX5KzaE1IvbzjAFSM',
-	})
-	router.post('/upload', upload.single('file'), (req, res, next) => {
-		const file = req.file
-		cloudinary.uploader
-			.upload(file.path, { folder: 'blog-upload' })
-			.then((result) => {
-				console.log(result)
-				res.send({ image_url: result.secure_url })
-			})
-			.catch((err) => console.log(err))
-	})
+	router.post('/upload/:slug', upload.single('file'), blogControllers.uploadThumb)
 
 	app.use('/api/blog', router)
 }
