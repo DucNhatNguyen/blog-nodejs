@@ -1,10 +1,7 @@
 var initModels = require('../models/init-models')
 const sequelize = require('../config/sequelize.config')
-const date = require('date-and-time')
 const { getPagination } = require('../commons/helpers')
 const multer = require('multer')
-const category = require('../models/category')
-const blogs = require('../models/blogs')
 var models = initModels(sequelize)
 
 exports.create = (req, res) => {
@@ -226,29 +223,52 @@ exports.softDelete = (req, res) => {}
 
 exports.findAllPublished = (req, res) => {}
 
-exports.uploadImgBlog = (req, res, next) => {
+// upload image for Blog
+var storage = multer.diskStorage({
+	// destination: function (req, file, cb) {
+	// 	cb(null, './public/uploads/')
+	// },
+	filename: function (req, file, cb) {
+		cb(
+			null,
+			file.fieldname + '-' + Date.now() + '.' + file.mimetype.split(`\/`)[1]
+		)
+	},
+})
+
+var upload = multer({ storage: storage })
+var cloudinary = require('cloudinary').v2
+	cloudinary.config({
+		cloud_name: 'droaa5vpq',
+		api_key: '278164842727274',
+		api_secret: 'EXsxgnPt8fxX5KzaE1IvbzjAFSM',
+	})
+
+exports.uploadThumb = (req, res, next) => {
 	const file = req.file
-	if (!file) {
-		const error = new Error('Please upload a file')
-		error.httpStatusCode = 400
-		return next(error)
-	}
-	res.send(file)
-	// const storage = multer.diskStorage({
-	// 	destination: function (req, file, cb) {
-	// 		cb(null, './uploads/blog')
-	// 	},
-	// 	filename: function (res, file, cb) {
-	// 		cb(null, file.originalname)
-	// 	},
-	// })
-	// console.log('storage', storage.destination)
-	// const upload = multer({ storage: storage }).single('thumbnail')
-	// return upload(req, res, function (err) {
-	// 	if (err) {
-	// 		res.send(err)
-	// 	} else {
-	// 		res.send('Upload file thành công!')
-	// 	}
-	// })
+		cloudinary.uploader
+			.upload(file.path, { folder: 'blog-upload' })
+			.then((result) => {
+				console.log(result)
+				const slug = req.params.slug
+				models.blogs
+					.update({ thumbnail: result.secure_url}, {
+						where: { slug: slug },
+						//returning: true,
+					})
+					.then(([num]) => {
+						if (num != 1) {
+							res.status(500).send({
+								message: `Cannot update Blog with slug=${slug}. Maybe Blog was not found or req.body is empty!`,
+							})
+						}
+					})
+					.catch((err) => {
+						res.status(500).send({
+							message: 'Error updating Blog with slug=' + slug,
+						})
+					})
+				res.send({ image_url: result.secure_url, status: "Success" })
+			})
+			.catch((err) => res.status(500).send({ error: err}))
 }
