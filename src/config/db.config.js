@@ -4,7 +4,7 @@ module.exports = {
 	PASSWORD: 'Cc72eE8OyQT5TC4kby4LEV52bVWkzhkT',
 	DB: 'neondb',
 	dialect: 'postgres',
-	sslmode: require,
+	sslmode: 'no-verify',
 	pool: {
 		max: 64,
 		min: 2,
