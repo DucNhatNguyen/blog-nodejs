@@ -58,7 +58,6 @@ exports.create = (req, res) => {
 		ishotblog: params.ishotblog,
 		cateid: params.cateid,
 		title: params.title,
-		filegoogledriveid: params.filegoogledriveid,
 		content: params.content,
 	}
 

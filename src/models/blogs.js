@@ -55,10 +55,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    filegoogledriveid: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
     content: {
       type: DataTypes.TEXT,
       allowNull: true
