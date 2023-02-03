@@ -2,10 +2,12 @@ var initModels = require('../models/init-models')
 const sequelize = require('../config/sequelize.config')
 const { getPagination } = require('../commons/helpers')
 const multer = require('multer')
+const moment = require('moment')
 var models = initModels(sequelize)
 
 exports.create = (req, res) => {
 	var params = req.body
+
 	// Validate input
 	if (!params.title) {
 		res.status(400).send({
@@ -13,24 +15,24 @@ exports.create = (req, res) => {
 		})
 		return
 	}
-	if (!params.author) {
-		res.status(400).send({
-			message: 'Author can not be empty!',
-		})
-		return
-	}
-	if (!params.publicdate) {
-		res.status(400).send({
-			message: 'Public date can not be empty!',
-		})
-		return
-	}
-	if (!params.thumbnail) {
-		res.status(400).send({
-			message: 'Thumbnail can not be empty!',
-		})
-		return
-	}
+	// if (!params.author) {
+	// 	res.status(400).send({
+	// 		message: 'Author can not be empty!',
+	// 	})
+	// 	return
+	// }
+	// if (!params.publicdate) {
+	// 	res.status(400).send({
+	// 		message: 'Public date can not be empty!',
+	// 	})
+	// 	return
+	// }
+	// if (!params.thumbnail) {
+	// 	res.status(400).send({
+	// 		message: 'Thumbnail can not be empty!',
+	// 	})
+	// 	return
+	// }
 	if (!params.slug) {
 		res.status(400).send({
 			message: 'Slug can not be empty!',
@@ -46,28 +48,31 @@ exports.create = (req, res) => {
 
 	// Create Blog model
 	const blog = {
+		title: params.title,
+		slug: params.slug,
 		author: params.author,
-		publicdate: params.publicdate,
 		sortdesc: params.sortdesc,
 		status: 1,
-		thumbnail: params.thumbnail,
-		slug: params.slug,
-		ishotblog: params.ishotblog,
+		thumbnail: params.file,
+		//ishotblog: params.ishotblog,
+		publicdate: moment(),
 		cateid: params.cateid,
-		title: params.title,
 		content: params.content,
 	}
 
-	models.blogs
-		.create(blog)
-		.then((data) => {
-			res.send(data)
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: err.message || 'Some error occurred while creating the Blog.',
-			})
-		})
+	console.log(blog)
+
+	// models.blogs
+	// 	.create(blog)
+	// 	.then((data) => {
+	// 		res.send(data)
+	// 	})
+	// 	.catch((err) => {
+	// 		res.status(500).send({
+	// 			message: err.message || 'Some error occurred while creating the Blog.',
+	// 		})
+	// 	})
+	res.send("success")
 }
 
 exports.findAll = (req, res) => {
