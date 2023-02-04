@@ -21,18 +21,12 @@ exports.create = (req, res) => {
 	// 	})
 	// 	return
 	// }
-	// if (!params.publicdate) {
-	// 	res.status(400).send({
-	// 		message: 'Public date can not be empty!',
-	// 	})
-	// 	return
-	// }
-	// if (!params.thumbnail) {
-	// 	res.status(400).send({
-	// 		message: 'Thumbnail can not be empty!',
-	// 	})
-	// 	return
-	// }
+	if (!params.thumbnail) {
+		res.status(400).send({
+			message: 'Thumbnail can not be empty!',
+		})
+		return
+	}
 	if (!params.slug) {
 		res.status(400).send({
 			message: 'Slug can not be empty!',
@@ -50,29 +44,26 @@ exports.create = (req, res) => {
 	const blog = {
 		title: params.title,
 		slug: params.slug,
-		author: params.author,
+		author: 1,
 		sortdesc: params.sortdesc,
-		status: 1,
-		thumbnail: params.file,
-		//ishotblog: params.ishotblog,
-		publicdate: moment(),
+		status: 2,
+		thumbnail: params.thumbnail,
+		//publicdate: moment(),
 		cateid: params.cateid,
 		content: params.content,
 	}
 
-	console.log(blog)
-
-	// models.blogs
-	// 	.create(blog)
-	// 	.then((data) => {
-	// 		res.send(data)
-	// 	})
-	// 	.catch((err) => {
-	// 		res.status(500).send({
-	// 			message: err.message || 'Some error occurred while creating the Blog.',
-	// 		})
-	// 	})
-	res.send("success")
+	models.blogs
+		.create(blog)
+		.then((data) => {
+			res.send(data)
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message: err.message || 'Some error occurred while creating the Blog.',
+			})
+		})
+	res.send('success')
 }
 
 exports.findAll = (req, res) => {
@@ -162,7 +153,6 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
 	const slug = req.params.slug
-	console.log(req.body)
 	if (!slug) {
 		res.status(400).send({
 			message: 'Slug can not be empty!',
@@ -256,4 +246,37 @@ exports.uploadThumb = (req, res, next) => {
 			res.send({ image_url: result.secure_url, status: 'Success' })
 		})
 		.catch((err) => res.status(500).send({ error: err }))
+}
+
+exports.changeStatus = (req, res) => {
+	const slug = req.params.slug
+	if (!slug) {
+		res.status(400).send({
+			message: 'Slug can not be empty!',
+		})
+		return
+	}
+
+	const input =
+		req.body.status == 1
+			? { status: req.body.status, publicdate: moment() }
+			: { status: req.body.status }
+
+	models.blogs
+		.update(input, {
+			where: { slug: slug },
+			returning: true,
+		})
+		.then(([num, data]) => {
+			if (num != 1) {
+				res.status(500).send({
+					message: `Change status fail!`,
+				})
+			} else {
+				res.status(200).send(data[0].dataValues)
+			}
+		})
+		.catch((err) => {
+			res.status(500).send(err)
+		})
 }

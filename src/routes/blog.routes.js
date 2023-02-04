@@ -42,5 +42,8 @@ module.exports = (app) => {
 	// Create a new Tutorial
 	router.delete('/', blogControllers.softDelete)
 
+	// change status
+	router.post('/change-status/:slug', blogControllers.changeStatus)
+
 	app.use('/api/blog', router)
 }
