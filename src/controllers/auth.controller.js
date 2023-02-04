@@ -2,41 +2,65 @@ var initModels = require('../models/init-models')
 const sequelize = require('../config/sequelize.config')
 var models = initModels(sequelize)
 const config = require('../config/auth.config.js')
-
 var jwt = require('jsonwebtoken')
 var bcrypt = require('bcryptjs')
 
 exports.signUp = (req, res) => {
+	// validate params
 	models.users
-		.create({
-			username: req.body.username,
-			email: req.body.email,
-			password: bcrypt.hashSync(req.body.password, 8),
+		.findOne({
+			where: {
+				username: req.body.username,
+			},
 		})
 		.then((user) => {
-			if (req.body.roles) {
-				models.roles
-					.findAll({
-						where: {
-							name: {
-								[Op.or]: req.body.roles,
-							},
-						},
-					})
-					.then((roles) => {
-						user.setRoles(roles).then(() => {
-							res.send({ message: 'User was registered successfully!' })
-						})
-					})
-			} else {
-				// user role = 1
-				user.setRoles([1]).then(() => {
-					res.send({ message: 'User was registered successfully!' })
+			if (user) {
+				return res.status(400).send({
+					message: 'Failed! Username is already in use!',
 				})
 			}
-		})
-		.catch((err) => {
-			res.status(500).send({ message: err.message })
+			models.users
+				.findOne({
+					where: {
+						email: req.body.email,
+					},
+				})
+				.then((user) => {
+					if (user) {
+						res.status(400).send({
+							message: 'Failed! Email is already in use!',
+						})
+						return
+					}
+					models.roles
+						.findOne({
+							where: {
+								id: req.body.roleid,
+							},
+						})
+						.then((role) => {
+							if (!role) {
+								res.status(400).send({
+									message: `Failed! Role-id ${req.body.roleid} does not exist`,
+								})
+								return
+							}
+							// add user
+							models.users
+								.create({
+									username: req.body.username,
+									email: req.body.email,
+									password: bcrypt.hashSync(req.body.password, 8),
+									roleid: req.body.roleid,
+								})
+								.then((user) => {
+									res.send({ status: 'Sign up success', data: user })
+								})
+								.catch((err) => {
+									res.status(500).send({ message: err.message })
+								})
+						})
+				})
 		})
 }
 
@@ -45,6 +69,10 @@ exports.signIn = (req, res) => {
 		.findOne({
 			where: {
 				username: req.body.username,
+			},
+			include: {
+				model: models.roles,
+				as: 'role',
 			},
 		})
 		.then((user) => {
@@ -62,21 +90,22 @@ exports.signIn = (req, res) => {
 			}
 
 			var token = jwt.sign({ id: user.id }, config.secret, {
-				expiresIn: 900, // 15 minutes
+				expiresIn: config.tokenExpire, // 15 minutes
+			})
+			var refreshToken = jwt.sign({ id: user.id }, config.refreshTokenSecret, {
+				expiresIn: config.refreshTokenExpire, // 15 minutes
 			})
 
-			var authorities = []
-			user.getRoles().then((roles) => {
-				for (let i = 0; i < roles.length; i++) {
-					authorities.push('ROLE_' + roles[i].name.toUpperCase())
-				}
-				res.status(200).send({
+			res.status(200).send({
+				status: 'Login success',
+				data: {
 					id: user.id,
 					username: user.username,
 					email: user.email,
-					roles: authorities,
+					role: user.dataValues.role.dataValues,
 					accessToken: token,
-				})
+					refreshToken: refreshToken,
+				},
 			})
 		})
 		.catch((err) => {

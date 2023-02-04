@@ -18,6 +18,14 @@ module.exports = function(sequelize, DataTypes) {
     password: {
       type: DataTypes.STRING(128),
       allowNull: false
+    },
+    roleid: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+      references: {
+        model: 'roles',
+        key: 'id'
+      }
     }
   }, {
     sequelize,
