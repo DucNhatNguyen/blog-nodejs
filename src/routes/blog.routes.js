@@ -1,5 +1,14 @@
 module.exports = (app) => {
+	const { authJwt } = require('../middleware')
 	const blogControllers = require('../controllers/blog.controller.js')
+
+	app.use(function (req, res, next) {
+		res.header(
+			'Access-Control-Allow-Headers',
+			'Bearer, Origin, Content-Type, Accept'
+		)
+		next()
+	})
 
 	var router = require('express').Router()
 
@@ -23,7 +32,7 @@ module.exports = (app) => {
 	router.post('/', upload.single('file'), blogControllers.create)
 
 	// Retrieve all Tutorials
-	router.get('/', blogControllers.findAll)
+	router.get('/', [authJwt.verifyToken], blogControllers.findAll)
 
 	// Retrieve all published Tutorials
 	router.get('/published', blogControllers.findAllPublished)
