@@ -41,7 +41,7 @@ module.exports = (app) => {
 
 	var upload = multer({ storage: storage })
 
-	router.post('/upload/:slug', upload.single('file'), blogControllers.uploadThumb)
+	router.post('/upload', upload.single('file'), blogControllers.uploadThumb)
 
 	app.use('/api/blog', router)
 }

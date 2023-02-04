@@ -237,37 +237,18 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage })
 var cloudinary = require('cloudinary').v2
-	cloudinary.config({
-		cloud_name: 'droaa5vpq',
-		api_key: '278164842727274',
-		api_secret: 'EXsxgnPt8fxX5KzaE1IvbzjAFSM',
-	})
+cloudinary.config({
+	cloud_name: 'droaa5vpq',
+	api_key: '278164842727274',
+	api_secret: 'EXsxgnPt8fxX5KzaE1IvbzjAFSM',
+})
 
 exports.uploadThumb = (req, res, next) => {
 	const file = req.file
-		cloudinary.uploader
-			.upload(file.path, { folder: 'blog-upload' })
-			.then((result) => {
-				console.log(result)
-				const slug = req.params.slug
-				models.blogs
-					.update({ thumbnail: result.secure_url}, {
-						where: { slug: slug },
-						//returning: true,
-					})
-					.then(([num]) => {
-						if (num != 1) {
-							res.status(500).send({
-								message: `Cannot update Blog with slug=${slug}. Maybe Blog was not found or req.body is empty!`,
-							})
-						}
-					})
-					.catch((err) => {
-						res.status(500).send({
-							message: 'Error updating Blog with slug=' + slug,
-						})
-					})
-				res.send({ image_url: result.secure_url, status: "Success" })
-			})
-			.catch((err) => res.status(500).send({ error: err}))
+	cloudinary.uploader
+		.upload(file.path, { folder: 'blog-upload' })
+		.then((result) => {
+			res.send({ image_url: result.secure_url, status: 'Success' })
+		})
+		.catch((err) => res.status(500).send({ error: err }))
 }
