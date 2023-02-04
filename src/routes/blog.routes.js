@@ -34,13 +34,13 @@ module.exports = (app) => {
 	// Update a Tutorial with id
 	router.put('/:slug', blogControllers.update)
 
+	router.post('/upload', upload.single('file'), blogControllers.uploadThumb)
+
 	// Delete a Tutorial with id
 	router.delete('/:id', blogControllers.delete)
 
 	// Create a new Tutorial
 	router.delete('/', blogControllers.softDelete)
-
-	router.post('/upload', upload.single('file'), blogControllers.uploadThumb)
 
 	app.use('/api/blog', router)
 }
