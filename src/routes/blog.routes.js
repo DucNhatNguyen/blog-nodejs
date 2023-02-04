@@ -34,11 +34,7 @@ module.exports = (app) => {
 	// Update a Tutorial with id
 	router.put('/:slug', blogControllers.update)
 
-	router.post(
-		'/upload',
-		upload.single('thumbnail'),
-		blogControllers.uploadThumb
-	)
+	router.post('/upload', upload.single('file'), blogControllers.uploadThumb)
 
 	// Delete a Tutorial with id
 	router.delete('/:id', blogControllers.delete)
