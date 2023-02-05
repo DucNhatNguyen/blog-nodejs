@@ -5,13 +5,12 @@ const sequelize = require('../config/sequelize.config')
 var models = initModels(sequelize)
 
 const verifyToken = (req, res, next) => {
-	let token = req.headers['Bearer']
-
-	if (!token) {
+	if (!req.header('Authorization')) {
 		return res.status(403).send({
 			message: 'No token provided!',
 		})
 	}
+	let token = req.header('Authorization').replace('Bearer ', '')
 
 	jwt.verify(token, config.secret, (err, decoded) => {
 		if (err) {
@@ -20,26 +19,30 @@ const verifyToken = (req, res, next) => {
 			})
 		}
 		req.userId = decoded.id
-		next()
+		//next()
 	})
 }
 
 const isAdmin = (req, res, next) => {
-	models.users.findByPk(req.userId).then((user) => {
-		user.getRoles().then((roles) => {
-			for (let i = 0; i < roles.length; i++) {
-				if (roles[i].name === 'admin') {
-					next()
-					return
-				}
-			}
-
-			res.status(403).send({
-				message: 'Require Admin Role!',
-			})
-			return
+	models.users
+		.findByPk(req.userId, {
+			include: {
+				model: models.roles,
+				as: 'role',
+			},
 		})
-	})
+		.then(({ role }) => {
+			console.log('role haha', role.name)
+			if (role.name != 'admin') {
+				return res.status(403).send({
+					message: 'Yêu cầu quyền Admin! Vui lòng kiểm tra lại',
+				})
+			}
+			next()
+		})
+		.catch((err) => {
+			res.status(500).send({ message: err.message })
+		})
 }
 
 const authJwt = {

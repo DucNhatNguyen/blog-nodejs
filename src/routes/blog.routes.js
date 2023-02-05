@@ -1,4 +1,13 @@
+const { verifyToken, isAdmin } = require('../middleware/authJwt')
 module.exports = (app) => {
+	app.use((req, res, next) => {
+		res.header(
+			'Access-Control-Allow-Headers',
+			'x-access-token, Origin, Content-Type, Accept'
+		)
+		next()
+	})
+
 	const blogControllers = require('../controllers/blog.controller.js')
 
 	var router = require('express').Router()
@@ -23,7 +32,14 @@ module.exports = (app) => {
 	router.post('/', upload.single('file'), blogControllers.create)
 
 	// Retrieve all Tutorials
-	router.get('/', blogControllers.findAll)
+	router.get(
+		'/',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+			isAdmin(req, res, next)
+		},
+		blogControllers.findAll
+	)
 
 	// Retrieve all published Tutorials
 	router.get('/published', blogControllers.findAllPublished)
