@@ -1,12 +1,12 @@
 const { verifyToken, isAdmin } = require('../middleware/authJwt')
 module.exports = (app) => {
-	app.use((req, res, next) => {
-		res.header(
-			'Access-Control-Allow-Headers',
-			'x-access-token, Origin, Content-Type, Accept'
-		)
-		next()
-	})
+	// app.use((req, res, next) => {
+	// 	res.header(
+	// 		'Access-Control-Allow-Headers',
+	// 		'x-access-token, Origin, Content-Type, Accept'
+	// 	)
+	// 	next()
+	// })
 
 	const blogControllers = require('../controllers/blog.controller.js')
 
@@ -29,7 +29,15 @@ module.exports = (app) => {
 	var upload = multer({ storage: storage })
 
 	// Create a new Tutorial
-	router.post('/', upload.single('file'), blogControllers.create)
+	router.post(
+		'/',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+			isAdmin(req, res, next)
+		},
+		upload.single('file'),
+		blogControllers.create
+	)
 
 	// Retrieve all Tutorials
 	router.get(
@@ -42,24 +50,66 @@ module.exports = (app) => {
 	)
 
 	// Retrieve all published Tutorials
-	router.get('/published', blogControllers.findAllPublished)
+	router.get(
+		'/published',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+			isAdmin(req, res, next)
+		},
+		blogControllers.findAllPublished
+	)
 
 	// Retrieve a single Tutorial with id
-	router.get('/:slug', blogControllers.findOne)
+	router.get(
+		'/:slug',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+			isAdmin(req, res, next)
+		},
+		blogControllers.findOne
+	)
 
 	// Update a Tutorial with id
-	router.put('/:slug', blogControllers.update)
+	router.put(
+		'/:slug',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+			isAdmin(req, res, next)
+		},
+		blogControllers.update
+	)
 
 	router.post('/upload', upload.single('file'), blogControllers.uploadThumb)
 
 	// Delete a Tutorial with id
-	router.delete('/:id', blogControllers.delete)
+	router.delete(
+		'/:id',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+			isAdmin(req, res, next)
+		},
+		blogControllers.delete
+	)
 
 	// Create a new Tutorial
-	router.delete('/', blogControllers.softDelete)
+	router.delete(
+		'/',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+			isAdmin(req, res, next)
+		},
+		blogControllers.softDelete
+	)
 
 	// change status
-	router.post('/change-status/:slug', blogControllers.changeStatus)
+	router.post(
+		'/change-status/:slug',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+			isAdmin(req, res, next)
+		},
+		blogControllers.changeStatus
+	)
 
 	app.use('/api/blog', router)
 }
