@@ -29,7 +29,14 @@ module.exports = (app) => {
 	var upload = multer({ storage: storage })
 
 	// Create a new Tutorial
-	router.post('/', upload.single('file'), blogControllers.create)
+	router.post(
+		'/',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		upload.single('file'),
+		blogControllers.create
+	)
 
 	// Retrieve all Tutorials
 	router.get(
@@ -79,7 +86,13 @@ module.exports = (app) => {
 	)
 
 	// Create a new Tutorial
-	router.delete('/', blogControllers.softDelete)
+	router.delete(
+		'/',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		blogControllers.softDelete
+	)
 
 	// change status
 	router.post(
