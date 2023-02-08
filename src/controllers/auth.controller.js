@@ -4,6 +4,8 @@ var models = initModels(sequelize)
 const config = require('../config/auth.config.js')
 var jwt = require('jsonwebtoken')
 var bcrypt = require('bcryptjs')
+const utils = require('../utils/verifyToken.js')
+const refreshTokenList = {}
 
 exports.signUp = (req, res) => {
 	// validate params
@@ -96,6 +98,9 @@ exports.signIn = (req, res) => {
 				expiresIn: config.refreshTokenExpire, // 15 minutes
 			})
 
+			// luu refresh token vao bien chung
+			refreshTokenList[refreshToken] = user
+
 			res.status(200).send({
 				status: 'Login success',
 				data: {
@@ -111,4 +116,62 @@ exports.signIn = (req, res) => {
 		.catch((err) => {
 			res.status(500).send({ message: err.message })
 		})
+}
+
+exports.refreshToken = (req, res) => {
+	const refreshToken = req.body.refreshToken
+
+	console.log('token', refreshTokenList)
+	if (refreshToken && refreshToken in refreshTokenList) {
+		try {
+			// Kiểm tra mã Refresh token
+			utils.verifyJwtToken(refreshToken, config.refreshTokenSecret)
+			// Lấy lại thông tin user
+			const user = refreshTokenList[refreshToken]
+			// Tạo mới mã token và trả lại cho user
+			const token = jwt.sign({ id: user.id }, config.secret, {
+				expiresIn: config.tokenExpire,
+			})
+			const response = {
+				token,
+			}
+			res.status(200).json(response)
+		} catch (err) {
+			console.error(err)
+			res.status(403).json({
+				message: 'Invalid refresh token',
+			})
+		}
+	} else {
+		res.status(400).json({
+			message: 'Invalid request',
+		})
+	}
+}
+
+exports.TokenCheckMiddleware = async (req, res, next) => {
+	// Lấy thông tin mã token được đính kèm trong request
+	const token =
+		req.body.token || req.query.token || req.headers['x-access-token']
+	// decode token
+	if (token) {
+		// Xác thực mã token và kiểm tra thời gian hết hạn của mã
+		try {
+			const decoded = await utils.verifyJwtToken(token, config.secret)
+			// Lưu thông tin giã mã được vào đối tượng req, dùng cho các xử lý ở sau
+			req.decoded = decoded
+			next()
+		} catch (err) {
+			// Giải mã gặp lỗi: Không đúng, hết hạn...
+			console.error(err)
+			return res.status(401).json({
+				message: 'Unauthorized access.',
+			})
+		}
+	} else {
+		// Không tìm thấy token trong request
+		return res.status(403).send({
+			message: 'No token provided.',
+		})
+	}
 }

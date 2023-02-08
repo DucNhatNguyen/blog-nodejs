@@ -1,17 +1,48 @@
+const { verifyToken, isAdmin } = require('../middleware/authJwt')
 module.exports = (app) => {
 	const tagControllers = require('../controllers/tag.controller.js')
 
 	var router = require('express').Router()
 
-	router.post('/', tagControllers.create)
+	router.post(
+		'/',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		tagControllers.create
+	)
 
-	router.get('/', tagControllers.findAll)
+	router.get(
+		'/',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		tagControllers.findAll
+	)
 
-	router.get('/:id', tagControllers.findOne)
+	router.get(
+		'/:id',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		tagControllers.findOne
+	)
 
-	router.put('/:id', tagControllers.update)
+	router.put(
+		'/:id',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		tagControllers.update
+	)
 
-	router.delete('/:id', tagControllers.delete)
+	router.delete(
+		'/:id',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		tagControllers.delete
+	)
 
 	app.use('/api/tag', router)
 }

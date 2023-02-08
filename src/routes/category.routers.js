@@ -1,21 +1,72 @@
+const { verifyToken, isAdmin } = require('../middleware/authJwt')
 module.exports = (app) => {
+	app.use((req, res, next) => {
+		res.header(
+			'Access-Control-Allow-Headers',
+			'x-access-token, Origin, Content-Type, Accept'
+		)
+		next()
+	})
+
 	const cateControllers = require('../controllers/category.controller.js')
 
 	var router = require('express').Router()
 
-	router.post('/', cateControllers.create)
+	router.post(
+		'/',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		cateControllers.create
+	)
 
-	router.get('/', cateControllers.findAll)
+	router.get(
+		'/',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		cateControllers.findAll
+	)
 
-	router.get('/parent', cateControllers.getCateParent)
+	router.get(
+		'/parent',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		cateControllers.getCateParent
+	)
 
-	router.get('/child', cateControllers.getCateChild)
+	router.get(
+		'/child',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		cateControllers.getCateChild
+	)
 
-	router.get('/:id', cateControllers.findOne)
+	router.get(
+		'/:id',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		cateControllers.findOne
+	)
 
-	router.put('/:id', cateControllers.update)
+	router.put(
+		'/:id',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		cateControllers.update
+	)
 
-	router.delete('/:id', cateControllers.delete)
+	router.delete(
+		'/:id',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		cateControllers.delete
+	)
 
 	app.use('/api/category', router)
 }

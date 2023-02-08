@@ -36,30 +36,59 @@ module.exports = (app) => {
 		'/',
 		(req, res, next) => {
 			verifyToken(req, res, next)
-			isAdmin(req, res, next)
 		},
 		blogControllers.findAll
 	)
 
 	// Retrieve all published Tutorials
-	router.get('/published', blogControllers.findAllPublished)
+	router.get(
+		'/published',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		blogControllers.findAllPublished
+	)
 
 	// Retrieve a single Tutorial with id
-	router.get('/:slug', blogControllers.findOne)
+	router.get(
+		'/:slug',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		blogControllers.findOne
+	)
 
 	// Update a Tutorial with id
-	router.put('/:slug', blogControllers.update)
+	router.put(
+		'/:slug',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		blogControllers.update
+	)
 
 	router.post('/upload', upload.single('file'), blogControllers.uploadThumb)
 
 	// Delete a Tutorial with id
-	router.delete('/:id', blogControllers.delete)
+	router.delete(
+		'/:id',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		blogControllers.delete
+	)
 
 	// Create a new Tutorial
 	router.delete('/', blogControllers.softDelete)
 
 	// change status
-	router.post('/change-status/:slug', blogControllers.changeStatus)
+	router.post(
+		'/change-status/:slug',
+		(req, res, next) => {
+			verifyToken(req, res, next)
+		},
+		blogControllers.changeStatus
+	)
 
 	app.use('/api/blog', router)
 }

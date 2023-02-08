@@ -16,5 +16,9 @@ module.exports = (app) => {
 
 	router.post('/sign-in', controller.signIn)
 
+	router.post('/refresh-token', controller.refreshToken)
+
+	router.use(controller.TokenCheckMiddleware)
+
 	app.use('/api/auth', router)
 }
