@@ -63,7 +63,6 @@ exports.create = (req, res) => {
 				message: err.message || 'Some error occurred while creating the Blog.',
 			})
 		})
-	res.send('success')
 }
 
 exports.findAll = (req, res) => {
