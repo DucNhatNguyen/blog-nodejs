@@ -279,3 +279,13 @@ exports.changeStatus = (req, res) => {
 			res.status(500).send(err)
 		})
 }
+
+exports.removeImage = async (req, res, next) => {
+	const path = req.body.path
+	try {
+		const res = await cloudinary.uploader.destroy(path)
+		console.log('resss', res)
+	} catch (error) {
+		next(error)
+	}
+}

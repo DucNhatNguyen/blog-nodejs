@@ -103,5 +103,7 @@ module.exports = (app) => {
 		blogControllers.changeStatus
 	)
 
+	router.post('/remove-img', blogControllers.removeImage)
+
 	app.use('/api/blog', router)
 }
