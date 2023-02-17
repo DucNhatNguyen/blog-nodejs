@@ -56,14 +56,13 @@ exports.create = (req, res) => {
 	models.blogs
 		.create(blog)
 		.then((data) => {
-			res.send(data)
+			res.status(200).send(data)
 		})
 		.catch((err) => {
 			res.status(500).send({
 				message: err.message || 'Some error occurred while creating the Blog.',
 			})
 		})
-	res.send('success')
 }
 
 exports.findAll = (req, res) => {

@@ -33,7 +33,7 @@ exports.create = (req, res) => {
 	models.category
 		.create(category)
 		.then((data) => {
-			res.send(data)
+			res.status(200).send(data)
 		})
 		.catch((err) => {
 			res.status(500).send({
