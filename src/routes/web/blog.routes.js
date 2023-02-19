@@ -3,6 +3,8 @@ module.exports = (app) => {
 	var router = require('express').Router()
 
 	router.get('/home-page', controller.getHomePage)
+	router.get('/static-post-path', controller.getStaticPath)
+	router.get('/post/:slug', controller.postDetail)
 
 	app.use('/api/web', router)
 }

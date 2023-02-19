@@ -132,3 +132,63 @@ exports.getHomePage = async (req, res) => {
 		relaxBlog: relaxBlog,
 	})
 }
+
+exports.getStaticPath = async (req, res) => {
+	const allSLugPosts = await models.blogs.findAll({
+		attributes: ['slug'],
+	})
+
+	res.send(
+		allSLugPosts.map((s) => {
+			return {
+				params: s,
+			}
+		})
+	)
+}
+
+exports.postDetail = async (req, res) => {
+	try {
+		if (!req.params.slug) {
+			res.status(400).send({
+				message: 'Slug can not be empty!',
+			})
+			return
+		}
+		const post = await models.blogs.findAll({
+			attributes: [
+				'id',
+				'author',
+				'publicdate',
+				'status',
+				'thumbnail',
+				'view',
+				'slug',
+				'cateid',
+				'title',
+				'content',
+			],
+			include: [
+				{
+					model: models.category,
+					as: 'cate',
+					required: true,
+					right: true,
+					attributes: ['id', 'title'],
+				},
+				{
+					model: models.author,
+					as: 'author_author',
+					required: true,
+					right: true,
+					attributes: ['id', 'name'],
+				},
+			],
+			where: { slug: req.params.slug },
+		})
+
+		res.status(200).send(post[0])
+	} catch (err) {
+		res.status(500).send(err)
+	}
+}
