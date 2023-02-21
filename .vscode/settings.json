@@ -1,0 +1,17 @@
+{
+	"sqltools.connections": [
+		{
+			"pgOptions": {
+				"ssl": true
+			},
+			"previewLimit": 50,
+			"server": "ep-shrill-snow-006772.ap-southeast-1.aws.neon.tech",
+			"port": 5432,
+			"driver": "PostgreSQL",
+			"name": "BlogsDB",
+			"database": "neondb",
+			"username": "nguyw461",
+			"password": "t3zwPD1gNhEC"
+		}
+	]
+}

@@ -2,9 +2,14 @@ var initModels = require('../../models/init-models')
 const sequelize = require('../../config/sequelize.config')
 const multer = require('multer')
 const moment = require('moment')
+const { getPagination } = require('../../commons/helpers')
 var models = initModels(sequelize)
 
 exports.getHomePage = async (req, res) => {
+	//const { page, pagesize } = req.query
+
+	//const { limit, offset } = getPagination(page, pagesize)
+
 	const featuresBlog = await models.blogs.findAll({
 		attributes: [
 			'id',
@@ -46,7 +51,7 @@ exports.getHomePage = async (req, res) => {
 		limit: 2,
 	})
 
-	const netBlog = await models.blogs.findAll({
+	const { count, rows } = await models.blogs.findAndCountAll({
 		attributes: [
 			'id',
 			'author',
@@ -58,6 +63,7 @@ exports.getHomePage = async (req, res) => {
 			'slug',
 			'cateid',
 			'title',
+			'ishotblog',
 			'createdAt',
 			[
 				sequelize.literal(
@@ -82,54 +88,17 @@ exports.getHomePage = async (req, res) => {
 				attributes: ['id', 'name'],
 			},
 		],
-		where: { cateid: 6 },
-		limit: 2,
-	})
-
-	const relaxBlog = await models.blogs.findAll({
-		attributes: [
-			'id',
-			'author',
-			'publicdate',
-			'sortdesc',
-			'status',
-			'thumbnail',
-			'view',
-			'slug',
-			'cateid',
-			'title',
-			'createdAt',
-			[
-				sequelize.literal(
-					"(case blogs.status when 1 then 'Hoạt động' else 'Tạm ẩn' end)"
-				),
-				'statusname',
-			],
-		],
-		include: [
-			{
-				model: models.category,
-				as: 'cate',
-				required: true,
-				right: true,
-				attributes: ['id', 'title'],
-			},
-			{
-				model: models.author,
-				as: 'author_author',
-				required: true,
-				right: true,
-				attributes: ['id', 'name'],
-			},
-		],
-		where: { cateid: 5 },
-		limit: 2,
+		where: { status: 1 },
+		//offset: offset,
+		//limit: limit,
 	})
 
 	res.send({
 		features: featuresBlog,
-		netBlog: netBlog,
-		relaxBlog: relaxBlog,
+		latestPosts: {
+			posts: rows,
+			total: count,
+		},
 	})
 }
 
