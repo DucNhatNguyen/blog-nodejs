@@ -150,7 +150,7 @@ exports.postDetail = async (req, res) => {
 					as: 'author_author',
 					required: true,
 					right: true,
-					attributes: ['id', 'name'],
+					attributes: ['id', 'name', 'avatar', 'bio', 'facebook', 'youtube'],
 				},
 			],
 			where: { slug: req.params.slug },
