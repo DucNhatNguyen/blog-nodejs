@@ -5,6 +5,7 @@ var _blogtag = require("./blogtag");
 var _category = require("./category");
 var _comment = require("./comment");
 var _functions = require("./functions");
+var _metadata = require("./metadata");
 var _roles = require("./roles");
 var _tag = require("./tag");
 var _users = require("./users");
@@ -16,6 +17,7 @@ function initModels(sequelize) {
   var category = _category(sequelize, DataTypes);
   var comment = _comment(sequelize, DataTypes);
   var functions = _functions(sequelize, DataTypes);
+  var metadata = _metadata(sequelize, DataTypes);
   var roles = _roles(sequelize, DataTypes);
   var tag = _tag(sequelize, DataTypes);
   var users = _users(sequelize, DataTypes);
@@ -36,6 +38,7 @@ function initModels(sequelize) {
     category,
     comment,
     functions,
+    metadata,
     roles,
     tag,
     users,

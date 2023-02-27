@@ -1,41 +1,32 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('author', {
+  return sequelize.define('metadata', {
     id: {
-      autoIncrement: true,
-      autoIncrementIdentity: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(128),
       allowNull: false,
+      defaultValue: Sequelize.Sequelize.fn('gen_random_uuid'),
       primaryKey: true
     },
-    name: {
-      type: DataTypes.STRING(50),
+    key: {
+      type: DataTypes.STRING(128),
       allowNull: true
     },
-    avatar: {
+    value: {
       type: DataTypes.STRING(500),
       allowNull: true
     },
-    bio: {
+    description: {
       type: DataTypes.STRING(500),
-      allowNull: true
-    },
-    youtube: {
-      type: DataTypes.STRING(50),
-      allowNull: true
-    },
-    facebook: {
-      type: DataTypes.STRING(50),
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'author',
+    tableName: 'metadata',
     schema: 'public',
     timestamps: false,
     indexes: [
       {
-        name: "pk_author",
+        name: "pk_metadata",
         unique: true,
         fields: [
           { name: "id" },
