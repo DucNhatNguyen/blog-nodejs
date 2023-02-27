@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
-const config = require('../config/auth.config.js')
-var initModels = require('../models/init-models')
-const sequelize = require('../config/sequelize.config')
+const config = require('@config/auth.config')
+var initModels = require('@models/init-models')
+const sequelize = require('@config/sequelize.config')
 var models = initModels(sequelize)
 
 const verifyToken = (req, res, next) => {

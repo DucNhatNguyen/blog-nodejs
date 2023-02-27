@@ -1,6 +1,6 @@
-var initModels = require('../models/init-models')
-const sequelize = require('../config/sequelize.config')
-const { getPagination } = require('../commons/helpers')
+var initModels = require('@models/init-models')
+const sequelize = require('@config/sequelize.config')
+const { getPagination } = require('@commons/helpers')
 var models = initModels(sequelize)
 
 exports.create = (req, res) => {

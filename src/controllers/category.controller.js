@@ -1,7 +1,7 @@
-var initModels = require('../models/init-models')
+var initModels = require('@models/init-models')
 var moment = require('moment')
-const sequelize = require('../config/sequelize.config')
-const { getPagination } = require('../commons/helpers')
+const sequelize = require('@config/sequelize.config')
+const { getPagination } = require('@commons/helpers')
 const { Op } = require('sequelize')
 var models = initModels(sequelize)
 

@@ -27,6 +27,7 @@
 		"date-and-time": "^2.4.1",
 		"express": "^4.18.2",
 		"jsonwebtoken": "^9.0.0",
+		"module-alias": "^2.2.2",
 		"moment": "^2.29.4",
 		"multer": "^1.4.5-lts.1",
 		"multer-storage-cloudinary": "^4.0.0",
@@ -40,5 +41,16 @@
 		"nodemon": "^2.0.20",
 		"prettier": "2.8.1",
 		"sequelize-auto": "^0.8.8"
+	},
+	"type": "commonjs",
+	"_moduleAliases": {
+		"@root": ".",
+		"@commons": "./src/commons",
+		"@config": "./src/config",
+		"@controllers": "./src/controllers",
+		"@models": "./src/models",
+		"@middleware": "./src/middleware",
+		"@routes": "./src/routes",
+		"@utils": "./src/utils"
 	}
 }

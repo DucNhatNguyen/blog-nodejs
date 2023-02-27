@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const app = express()
-
+require('module-alias/register')
 var corsOptions = {
 	origin: '*',
 	methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
@@ -16,15 +16,6 @@ app.use(express.json())
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }))
-
-// db.sequelize
-// 	.sync({ force: false })
-// 	.then(() => {
-// 		console.log('Synced db.')
-// 	})
-// 	.catch((err) => {
-// 		console.log('Failed to sync db: ' + err.message)
-// 	})
 
 require('./src/routes')(app)
 

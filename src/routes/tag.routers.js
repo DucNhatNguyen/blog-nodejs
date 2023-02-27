@@ -1,6 +1,6 @@
-const { verifyToken, isAdmin } = require('../middleware/authJwt')
+const { verifyToken, isAdmin } = require('@middleware/authJwt')
 module.exports = (app) => {
-	const tagControllers = require('../controllers/tag.controller.js')
+	const tagControllers = require('@controllers/tag.controller.js')
 
 	var router = require('express').Router()
 

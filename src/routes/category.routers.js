@@ -1,4 +1,4 @@
-const { verifyToken, isAdmin } = require('../middleware/authJwt')
+const { verifyToken, isAdmin } = require('@middleware/authJwt')
 module.exports = (app) => {
 	app.use((req, res, next) => {
 		res.header(
@@ -8,7 +8,7 @@ module.exports = (app) => {
 		next()
 	})
 
-	const cateControllers = require('../controllers/category.controller.js')
+	const cateControllers = require('@controllers/category.controller.js')
 
 	var router = require('express').Router()
 

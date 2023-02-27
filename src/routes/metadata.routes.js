@@ -1,4 +1,4 @@
-const { verifyToken, isAdmin } = require('../middleware/authJwt')
+const { verifyToken, isAdmin } = require('@middleware/authJwt')
 module.exports = (app) => {
 	app.use((req, res, next) => {
 		res.header(
@@ -8,7 +8,7 @@ module.exports = (app) => {
 		next()
 	})
 
-	const metaControllers = require('../controllers/metadata.controller')
+	const metaControllers = require('@controllers/metadata.controller')
 
 	var router = require('express').Router()
 

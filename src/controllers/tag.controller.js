@@ -1,6 +1,6 @@
-var initModels = require('../models/init-models')
-const sequelize = require('../config/sequelize.config')
-const { getPagination } = require('../commons/helpers')
+var initModels = require('@models/init-models')
+const sequelize = require('@config/sequelize.config')
+const { getPagination } = require('@commons/helpers')
 var models = initModels(sequelize)
 
 exports.create = (req, res) => {
@@ -12,7 +12,7 @@ exports.create = (req, res) => {
 		})
 		return
 	}
-	
+
 	if (!params.slug) {
 		res.status(400).send({
 			message: 'Slug can not be empty!',
@@ -43,11 +43,7 @@ exports.findAll = (req, res) => {
 	const { limit, offset } = getPagination(page, pagesize)
 	models.tag
 		.findAndCountAll({
-			attributes: [
-				'id',
-				'title',
-				'slug'
-			],
+			attributes: ['id', 'title', 'slug'],
 			offset: offset,
 			limit: limit,
 		})
@@ -56,8 +52,7 @@ exports.findAll = (req, res) => {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message:
-					err.message || 'Some error occurred while retrieving tag.',
+				message: err.message || 'Some error occurred while retrieving tag.',
 			})
 		})
 }

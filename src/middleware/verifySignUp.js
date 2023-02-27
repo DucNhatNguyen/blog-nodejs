@@ -1,5 +1,5 @@
-var initModels = require('../models/init-models')
-const sequelize = require('../config/sequelize.config')
+var initModels = require('@models/init-models')
+const sequelize = require('@config/sequelize.config')
 var models = initModels(sequelize)
 
 const verifySignUp = (req, res) => {

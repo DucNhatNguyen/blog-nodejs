@@ -1,10 +1,10 @@
-var initModels = require('../models/init-models')
-const sequelize = require('../config/sequelize.config')
+var initModels = require('@models/init-models')
+const sequelize = require('@config/sequelize.config')
 var models = initModels(sequelize)
-const config = require('../config/auth.config.js')
+const config = require('@config/auth.config')
 var jwt = require('jsonwebtoken')
 var bcrypt = require('bcryptjs')
-const utils = require('../utils/verifyToken.js')
+const utils = require('@utils/verifyToken.js')
 const refreshTokenList = {}
 
 exports.signUp = (req, res) => {

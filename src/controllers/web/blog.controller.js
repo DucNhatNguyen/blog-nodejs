@@ -1,8 +1,5 @@
-var initModels = require('../../models/init-models')
-const sequelize = require('../../config/sequelize.config')
-const multer = require('multer')
-const moment = require('moment')
-const { getPagination } = require('../../commons/helpers')
+var initModels = require('@models/init-models')
+const sequelize = require('@config/sequelize.config')
 var models = initModels(sequelize)
 
 exports.getHomePage = async (req, res) => {
