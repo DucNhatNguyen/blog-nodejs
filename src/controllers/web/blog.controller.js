@@ -158,3 +158,50 @@ exports.postDetail = async (req, res) => {
 		res.status(500).send(err)
 	}
 }
+
+exports.getBlogsWithManyViews = async (req, res) => {
+	const blog = await models.blogs.findAll({
+		attributes: [
+			'id',
+			'author',
+			'publicdate',
+			'sortdesc',
+			'status',
+			'thumbnail',
+			'view',
+			'slug',
+			'cateid',
+			'title',
+			'ishotblog',
+			'createdAt',
+			[
+				sequelize.literal(
+					"(case blogs.status when 1 then 'Hoạt động' else 'Tạm ẩn' end)"
+				),
+				'statusname',
+			],
+		],
+		include: [
+			{
+				model: models.category,
+				as: 'cate',
+				required: true,
+				right: true,
+				attributes: ['id', 'title'],
+			},
+			{
+				model: models.author,
+				as: 'author_author',
+				required: true,
+				right: true,
+				attributes: ['id', 'name'],
+			},
+		],
+		order: [['view', 'DESC']],
+		limit: 4,
+	})
+
+	res.send({
+		data: blog,
+	})
+}
