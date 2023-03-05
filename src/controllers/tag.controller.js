@@ -44,8 +44,9 @@ exports.findAll = (req, res) => {
 	models.tag
 		.findAndCountAll({
 			attributes: ['id', 'title', 'slug'],
+			//order: sequelize.literal('title ASC'),
 			offset: offset,
-			limit: limit,
+			limit: 2,
 		})
 		.then(({ count, rows }) => {
 			res.send({ data: rows, total: count })

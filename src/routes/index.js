@@ -8,4 +8,5 @@ module.exports = (app) => {
 	//web
 	require('./web/blog.routes')(app)
 	require('./web/metadata.routes')(app)
+	require('./web/page.routes')(app)
 }
